@@ -1,0 +1,21 @@
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+known_django = ["django", "rest_framework"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "known_django", "FIRSTPARTY", "LOCALFOLDER"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "core.settings"
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+testpaths = ["../tests"]
+addopts = "-v --tb=short --cov=. --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["."]
+omit = ["*/migrations/*", "*/tests/*", "manage.py", "core/asgi.py", "core/wsgi.py"]
