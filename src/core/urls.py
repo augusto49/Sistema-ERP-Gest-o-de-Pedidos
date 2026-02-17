@@ -10,6 +10,8 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from shared.views.scalar import ScalarView
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     # API v1
@@ -28,4 +30,10 @@ urlpatterns = [
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
+    path(
+        "api/scalar/",
+        ScalarView.as_view(),
+        name="scalar",
+    ),
 ]
+
