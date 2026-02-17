@@ -31,6 +31,7 @@ API RESTful para gerenciamento de pedidos, clientes e produtos, construída com 
 
 ### Pré-requisitos
 
+- [Python 3.11+](https://www.python.org/downloads/)
 - [Docker](https://www.docker.com/) e Docker Compose instalados
 
 ### 1. Clonar repositório
@@ -43,10 +44,14 @@ cd Sistema-ERP-Gest-o-de-Pedidos
 ### 2. Configurar variáveis de ambiente
 
 ```bash
+# Linux/macOS
 cp .env.example .env
+
+# Windows (PowerShell)
+Copy-Item .env.example .env
 ```
 
-### 3. Subir os serviços
+### 3. Opção A — Docker (recomendado)
 
 ```bash
 docker-compose up --build
@@ -59,19 +64,46 @@ Isso inicia automaticamente:
 - **Redis** na porta `6379`
 - Migrations aplicadas automaticamente no startup
 
-### 4. Popular dados iniciais (opcional)
+#### Seed de dados (opcional)
 
 ```bash
 docker-compose exec web python manage.py seed
 ```
 
-### 5. Verificar saúde
+### 3. Opção B — Local (sem Docker)
+
+> Requer MySQL e Redis rodando localmente. Ajuste as variáveis no `.env`.
+
+```bash
+# Criar e ativar ambiente virtual
+python -m venv venv
+
+# Linux/macOS
+source venv/bin/activate
+
+# Windows (PowerShell)
+venv\Scripts\activate
+
+# Instalar dependências
+pip install -r requirements.txt
+
+# Aplicar migrations
+python src/manage.py migrate
+
+# Popular dados iniciais (opcional)
+python src/manage.py seed
+
+# Iniciar servidor de desenvolvimento
+python src/manage.py runserver
+```
+
+### 4. Verificar saúde
 
 ```bash
 curl http://localhost:8000/health/
 ```
 
-### 6. Acessar documentação
+### 5. Acessar documentação
 
 | Ferramenta  | URL                               |
 | ----------- | --------------------------------- |
@@ -82,16 +114,30 @@ curl http://localhost:8000/health/
 
 ## 🧪 Testes
 
-### Rodar todos os testes
+### Rodar via Docker
 
 ```bash
-# Com Docker
 docker-compose exec web pytest -v
-
-# Local (com venv)
-pip install -r requirements.txt
-DJANGO_SETTINGS_MODULE=core.settings_test pytest -v
 ```
+
+### Rodar localmente
+
+```bash
+# Criar venv (se ainda não existir)
+python -m venv venv
+
+# Ativar venv
+# Linux/macOS:   source venv/bin/activate
+# Windows:       venv\Scripts\activate
+
+# Instalar dependências
+pip install -r requirements.txt
+
+# Rodar testes
+pytest -v
+```
+
+> Os testes usam SQLite em memória (`settings_test.py`) — não precisa de MySQL/Redis.
 
 ### Cobertura de código
 
