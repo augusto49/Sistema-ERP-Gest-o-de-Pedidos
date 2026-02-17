@@ -24,11 +24,11 @@ Adotaremos uma abordagem de **Arquitetura Limpa** adaptada para Django, enfatiza
 
 ```mermaid
 graph TD
-    Client[Cliente / Externo] --> API[Camada de API (Views/Serializers)]
-    API --> Service[Camada de Serviço (Regras de Negócio)]
-    Service --> Repository[Interface do Repositório]
-    Repository --> Model[Django ORM / DB]
-    Service --> Redis[Cache/Lock Redis]
+    Client["Cliente / Externo"] --> API["Camada de API - Views/Serializers"]
+    API --> Service["Camada de Serviço - Regras de Negócio"]
+    Service --> Repository["Interface do Repositório"]
+    Repository --> Model["Django ORM / DB"]
+    Service --> Redis["Cache/Lock Redis"]
 ```
 
 ## 2. Fluxo de Dados
@@ -59,17 +59,17 @@ sequenceDiagram
     participant DB as MySQL
 
     C->>V: POST /api/v1/orders/
-    V->>V: Validar input (Serializer)
+    V->>V: Validar input via Serializer
     V->>S: create_order(data)
     S->>CR: get_by_id(customer_id)
     CR->>DB: SELECT * FROM customers
     DB-->>CR: Customer
     CR-->>S: CustomerEntity
 
-    Note over S,DB: transaction.atomic()
+    Note over S,DB: transaction.atomic
     S->>PR: get_by_ids_for_update(product_ids)
-    PR->>DB: SELECT FOR UPDATE (ordered by ID)
-    DB-->>PR: Products (locked)
+    PR->>DB: SELECT FOR UPDATE - ordered by ID
+    DB-->>PR: Products locked
     PR-->>S: [ProductEntity]
 
     S->>S: Verificar estoque de cada item
@@ -79,9 +79,9 @@ sequenceDiagram
     OR->>DB: INSERT order + items
     Note over S,DB: commit
 
-    S->>EB: publish("order_created", {...})
+    S->>EB: publish order_created event
     S-->>V: OrderEntity
-    V->>V: Serializar saída (OutputSerializer)
+    V->>V: Serializar saída via OutputSerializer
     V-->>C: 201 Created + JSON
 ```
 
