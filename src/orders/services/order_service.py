@@ -182,7 +182,7 @@ class OrderService:
         )
 
     def update_status(
-        self, order_id: int, new_status: str, notes: str = ""
+        self, order_id: int, new_status: str, notes: str = "", changed_by: str = "system"
     ) -> OrderEntity:
         """
         Atualiza o status de um pedido com validação de transição.
@@ -206,6 +206,7 @@ class OrderService:
             order_id=order_id,
             new_status=new_status_enum.value,
             notes=notes,
+            changed_by=changed_by,
         )
 
         logger.info(
@@ -222,7 +223,7 @@ class OrderService:
 
         return self.get_order(order_id)
 
-    def cancel_order(self, order_id: int, reason: str = "") -> OrderEntity:
+    def cancel_order(self, order_id: int, reason: str = "", changed_by: str = "system") -> OrderEntity:
         """
         Cancela um pedido e restaura o estoque.
         Só é permitido para pedidos com status PENDENTE ou CONFIRMADO.
@@ -251,6 +252,7 @@ class OrderService:
                 order_id=order_id,
                 new_status=OrderStatus.CANCELLED.value,
                 notes=reason or "Pedido cancelado.",
+                changed_by=changed_by,
             )
 
         logger.info("order_cancelled", order_id=order_id, reason=reason)
@@ -260,3 +262,12 @@ class OrderService:
         })
 
         return self.get_order(order_id)
+
+    def delete_order(self, order_id: int) -> bool:
+        """Exclusão lógica de um pedido."""
+        self.get_order(order_id)
+        deleted = self.order_repository.soft_delete(order_id)
+        if deleted:
+            logger.info("order_deleted", order_id=order_id)
+        return deleted
+

@@ -38,7 +38,7 @@ class IOrderRepository(ABC):
         ...
 
     @abstractmethod
-    def update_status(self, order_id: int, new_status: str, notes: str = "") -> bool:
+    def update_status(self, order_id: int, new_status: str, notes: str = "", changed_by: str = "system") -> bool:
         """Atualiza o status de um pedido e registra no histórico."""
         ...
 

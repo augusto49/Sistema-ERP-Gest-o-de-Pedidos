@@ -61,6 +61,7 @@ class OrderOutputSerializer(serializers.Serializer):
     """DTO de saída para pedido completo."""
 
     id = serializers.IntegerField(read_only=True)
+    order_number = serializers.CharField(read_only=True)
     customer_id = serializers.IntegerField(read_only=True)
     customer_name = serializers.CharField(read_only=True)
     status = serializers.SerializerMethodField()
