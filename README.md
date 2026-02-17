@@ -36,8 +36,8 @@ API RESTful para gerenciamento de pedidos, clientes e produtos, construída com 
 ### 1. Clonar repositório
 
 ```bash
-git clone https://github.com/augusto49/Sistema-ERP---M-dulo-de-Gest-o-de-Pedidos.git
-cd Sistema-ERP---M-dulo-de-Gest-o-de-Pedidos
+git clone https://github.com/augusto49/Sistema-ERP-Gest-o-de-Pedidos.git
+cd Sistema-ERP-Gest-o-de-Pedidos
 ```
 
 ### 2. Configurar variáveis de ambiente
