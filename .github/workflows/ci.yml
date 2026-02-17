@@ -1,0 +1,50 @@
+name: CI - Build & Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run linting (flake8)
+        run: flake8 src/ tests/
+
+      - name: Run tests with coverage
+        env:
+          DJANGO_SETTINGS_MODULE: core.settings_test
+          PYTHONPATH: src
+        run: |
+          pytest --cov=customers --cov=products --cov=orders --cov=shared \
+                 --cov-report=term-missing \
+                 --cov-fail-under=60 \
+                 -v
+
+      - name: Build Docker image
+        run: docker build -t erp-orders:ci .
