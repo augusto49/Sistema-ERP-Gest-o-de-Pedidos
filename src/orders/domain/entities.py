@@ -68,9 +68,8 @@ class OrderEntity:
         """
         if not self.status.can_transition_to(new_status):
             raise InvalidStateTransitionException(
-                current_state=self.status.value,
-                desired_state=new_status.value,
-                entity="Pedido",
+                current_status=self.status.value,
+                target_status=new_status.value,
             )
         self.status = new_status
 

@@ -15,9 +15,9 @@ class DomainException(Exception):
 class EntityNotFoundException(DomainException):
     """Entidade não encontrada no banco de dados."""
 
-    def __init__(self, entity: str, identifier):
+    def __init__(self, entity: str, entity_id):
         super().__init__(
-            message=f"{entity} com identificador '{identifier}' não encontrado.",
+            message=f"{entity} com identificador '{entity_id}' não encontrado.",
             code="not_found",
         )
 
