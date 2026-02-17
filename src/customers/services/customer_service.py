@@ -37,6 +37,7 @@ class CustomerService:
             email=data["email"],
             cpf_cnpj=data["cpf_cnpj"],
             phone=data.get("phone", ""),
+            address=data.get("address", ""),
         )
 
         # Validação da entidade
@@ -106,6 +107,7 @@ class CustomerService:
         existing.email = new_email
         existing.cpf_cnpj = new_cpf_cnpj
         existing.phone = data.get("phone", existing.phone)
+        existing.address = data.get("address", existing.address)
         existing.is_active = data.get("is_active", existing.is_active)
 
         # Revalidar

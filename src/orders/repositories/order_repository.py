@@ -32,6 +32,7 @@ class OrderRepository(IOrderRepository):
 
         return OrderEntity(
             id=model.id,
+            order_number=model.order_number,
             customer_id=model.customer_id,
             customer_name=model.customer.name,
             status=OrderStatus(model.status),
@@ -104,12 +105,13 @@ class OrderRepository(IOrderRepository):
             order=order_model,
             from_status="",
             to_status=OrderStatus.PENDING.value,
+            changed_by="system",
             notes="Pedido criado.",
         )
 
         return self.get_by_id(order_model.id)
 
-    def update_status(self, order_id: int, new_status: str, notes: str = "") -> bool:
+    def update_status(self, order_id: int, new_status: str, notes: str = "", changed_by: str = "system") -> bool:
         try:
             order = Order.objects.get(id=order_id, deleted_at__isnull=True)
         except Order.DoesNotExist:
@@ -123,6 +125,7 @@ class OrderRepository(IOrderRepository):
             order=order,
             from_status=old_status,
             to_status=new_status,
+            changed_by=changed_by,
             notes=notes,
         )
 

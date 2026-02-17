@@ -24,6 +24,7 @@ class CustomerRepository(ICustomerRepository):
             email=model.email,
             cpf_cnpj=model.cpf_cnpj,
             phone=model.phone,
+            address=model.address,
             is_active=model.is_active,
             created_at=model.created_at,
             updated_at=model.updated_at,
@@ -80,6 +81,7 @@ class CustomerRepository(ICustomerRepository):
             email=entity.email,
             cpf_cnpj=entity.cpf_cnpj,
             phone=entity.phone,
+            address=entity.address,
             is_active=entity.is_active,
         )
         return self._to_entity(model)
@@ -90,6 +92,7 @@ class CustomerRepository(ICustomerRepository):
             email=entity.email,
             cpf_cnpj=entity.cpf_cnpj,
             phone=entity.phone,
+            address=entity.address,
             is_active=entity.is_active,
         )
         model = Customer.objects.get(id=entity.id)

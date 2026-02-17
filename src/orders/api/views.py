@@ -36,6 +36,7 @@ class OrderViewSet(ViewSet):
         GET    /api/v1/orders/                      → list
         POST   /api/v1/orders/                      → create
         GET    /api/v1/orders/{id}/                  → retrieve
+        DELETE /api/v1/orders/{id}/                  → destroy (soft delete)
         PATCH  /api/v1/orders/{id}/status/           → update_status
         POST   /api/v1/orders/{id}/cancel/           → cancel
         GET    /api/v1/orders/customer/{customer_id}/ → by_customer
@@ -85,6 +86,12 @@ class OrderViewSet(ViewSet):
         serializer = OrderOutputSerializer(order)
         return Response(serializer.data)
 
+    def destroy(self, request, pk=None):
+        """Exclusão lógica de um pedido."""
+        service = _get_service()
+        service.delete_order(int(pk))
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     @action(detail=True, methods=["patch"], url_path="status")
     def update_status(self, request, pk=None):
         """
@@ -100,6 +107,7 @@ class OrderViewSet(ViewSet):
             order_id=int(pk),
             new_status=input_serializer.validated_data["status"],
             notes=input_serializer.validated_data.get("notes", ""),
+            changed_by=getattr(request.user, "username", None) or "anonymous",
         )
 
         output_serializer = OrderOutputSerializer(order)
@@ -118,6 +126,7 @@ class OrderViewSet(ViewSet):
         order = service.cancel_order(
             order_id=int(pk),
             reason=input_serializer.validated_data.get("reason", ""),
+            changed_by=getattr(request.user, "username", None) or "anonymous",
         )
 
         output_serializer = OrderOutputSerializer(order)

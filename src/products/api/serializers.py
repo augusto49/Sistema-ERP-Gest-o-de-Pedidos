@@ -28,3 +28,12 @@ class ProductOutputSerializer(serializers.Serializer):
     is_active = serializers.BooleanField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
+
+
+class StockUpdateSerializer(serializers.Serializer):
+    """DTO para atualização de estoque de produto."""
+
+    quantity = serializers.IntegerField(
+        help_text="Quantidade a adicionar (positivo) ou subtrair (negativo)."
+    )
+

@@ -11,13 +11,17 @@ from drf_spectacular.views import (
 )
 
 from shared.views.scalar import ScalarView
+from shared.views.health import HealthCheckView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # Health Check
+    path("health/", HealthCheckView.as_view(), name="health-check"),
     # API v1
     path("api/v1/customers/", include("customers.api.urls")),
     path("api/v1/products/", include("products.api.urls")),
     path("api/v1/orders/", include("orders.api.urls")),
+
     # Documentação
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(

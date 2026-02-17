@@ -3,6 +3,8 @@ Django Models - Order, OrderItem, OrderHistory.
 Camada de persistência mapeada para o banco de dados MySQL.
 """
 
+import uuid
+
 from django.db import models
 
 from orders.domain.value_objects import OrderStatus
@@ -15,6 +17,12 @@ class Order(models.Model):
 
     STATUS_CHOICES = [(s.value, s.name.title()) for s in OrderStatus]
 
+    order_number = models.CharField(
+        max_length=20,
+        unique=True,
+        editable=False,
+        verbose_name="Número do Pedido",
+    )
     customer = models.ForeignKey(
         "customers.Customer",
         on_delete=models.PROTECT,
@@ -58,8 +66,18 @@ class Order(models.Model):
             models.Index(fields=["created_at"], name="idx_order_created"),
         ]
 
+    def save(self, *args, **kwargs):
+        if not self.order_number:
+            self.order_number = self._generate_order_number()
+        super().save(*args, **kwargs)
+
+    @staticmethod
+    def _generate_order_number() -> str:
+        """Gera número único do pedido: PED-XXXXXXXX."""
+        return f"PED-{uuid.uuid4().hex[:8].upper()}"
+
     def __str__(self):
-        return f"Pedido #{self.id} - {self.status}"
+        return f"Pedido {self.order_number} - {self.status}"
 
 
 class OrderItem(models.Model):
@@ -132,6 +150,12 @@ class OrderHistory(models.Model):
     changed_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name="Data da Alteração",
+    )
+    changed_by = models.CharField(
+        max_length=100,
+        blank=True,
+        default="system",
+        verbose_name="Usuário Responsável",
     )
     notes = models.TextField(
         blank=True,

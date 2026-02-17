@@ -105,3 +105,27 @@ class ProductService:
         if deleted:
             logger.info("product_deleted", product_id=product_id)
         return deleted
+
+    def update_stock(self, product_id: int, quantity: int) -> ProductEntity:
+        """
+        Atualiza o estoque de um produto.
+        Quantidade positiva = adicionar. Negativa = subtrair.
+        """
+        product = self.get_product(product_id)
+
+        new_quantity = product.stock_quantity + quantity
+        if new_quantity < 0:
+            raise BusinessRuleViolation(
+                message=f"Estoque insuficiente. Disponível: {product.stock_quantity}, solicitado: {abs(quantity)}."
+            )
+
+        product.stock_quantity = new_quantity
+        updated = self.repository.update(product)
+        logger.info(
+            "stock_updated",
+            product_id=product_id,
+            change=quantity,
+            new_stock=new_quantity,
+        )
+        return updated
+

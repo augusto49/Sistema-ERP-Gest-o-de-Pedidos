@@ -13,6 +13,7 @@ class CustomerInputSerializer(serializers.Serializer):
     email = serializers.EmailField()
     cpf_cnpj = serializers.CharField(max_length=18)
     phone = serializers.CharField(max_length=20, required=False, default="")
+    address = serializers.CharField(required=False, default="")
     is_active = serializers.BooleanField(required=False, default=True)
 
 
@@ -24,6 +25,7 @@ class CustomerOutputSerializer(serializers.Serializer):
     email = serializers.EmailField(read_only=True)
     cpf_cnpj = serializers.CharField(read_only=True)
     phone = serializers.CharField(read_only=True)
+    address = serializers.CharField(read_only=True)
     is_active = serializers.BooleanField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)

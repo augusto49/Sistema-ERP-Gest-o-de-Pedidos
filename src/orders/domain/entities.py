@@ -38,6 +38,7 @@ class OrderEntity:
     """
 
     id: Optional[int] = None
+    order_number: str = ""
     customer_id: int = 0
     customer_name: str = ""
     status: OrderStatus = OrderStatus.PENDING

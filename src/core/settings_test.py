@@ -24,3 +24,7 @@ CACHES = {
 MIDDLEWARE = [
     m for m in MIDDLEWARE if "IdempotencyMiddleware" not in m  # noqa: F405
 ]
+
+# Desabilitar throttling para testes (evita 429 Too Many Requests)
+REST_FRAMEWORK["DEFAULT_THROTTLE_CLASSES"] = []  # noqa: F405
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {}  # noqa: F405

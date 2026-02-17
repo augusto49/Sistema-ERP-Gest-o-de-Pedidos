@@ -32,6 +32,11 @@ class Customer(models.Model):
         default="",
         verbose_name="Telefone",
     )
+    address = models.TextField(
+        blank=True,
+        default="",
+        verbose_name="Endereço",
+    )
     is_active = models.BooleanField(
         default=True,
         verbose_name="Ativo",

@@ -3,10 +3,15 @@ Views (Controllers) do módulo de Produtos.
 """
 
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-from products.api.serializers import ProductInputSerializer, ProductOutputSerializer
+from products.api.serializers import (
+    ProductInputSerializer,
+    ProductOutputSerializer,
+    StockUpdateSerializer,
+)
 from products.repositories.product_repository import ProductRepository
 from products.services.product_service import ProductService
 
@@ -20,11 +25,12 @@ class ProductViewSet(ViewSet):
     API REST para gerenciamento de Produtos.
 
     Endpoints:
-        GET    /api/v1/products/           → list
-        POST   /api/v1/products/           → create
-        GET    /api/v1/products/{id}/       → retrieve
-        PUT    /api/v1/products/{id}/       → update
-        DELETE /api/v1/products/{id}/       → destroy (soft delete)
+        GET    /api/v1/products/               → list
+        POST   /api/v1/products/               → create
+        GET    /api/v1/products/{id}/           → retrieve
+        PUT    /api/v1/products/{id}/           → update
+        DELETE /api/v1/products/{id}/           → destroy (soft delete)
+        PATCH  /api/v1/products/{id}/stock/     → update_stock
     """
 
     def list(self, request):
@@ -84,3 +90,22 @@ class ProductViewSet(ViewSet):
         service = _get_service()
         service.delete_product(int(pk))
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=["patch"], url_path="stock")
+    def update_stock(self, request, pk=None):
+        """
+        Atualiza o estoque de um produto.
+        Envie { "quantity": 10 } para adicionar ou { "quantity": -5 } para subtrair.
+        """
+        service = _get_service()
+        input_serializer = StockUpdateSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+
+        product = service.update_stock(
+            product_id=int(pk),
+            quantity=input_serializer.validated_data["quantity"],
+        )
+
+        output_serializer = ProductOutputSerializer(product)
+        return Response(output_serializer.data)
+
