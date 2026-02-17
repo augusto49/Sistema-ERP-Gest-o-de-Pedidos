@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   # ---- Aplicação Django ----
   web:
@@ -31,7 +29,7 @@ services:
       MYSQL_USER: erp_user
       MYSQL_PASSWORD: erp_password
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:

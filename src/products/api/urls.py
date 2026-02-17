@@ -2,6 +2,14 @@
 URLs do módulo de Produtos.
 """
 
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
-urlpatterns = []
+from products.api.views import ProductViewSet
+
+router = DefaultRouter()
+router.register(r"", ProductViewSet, basename="product")
+
+urlpatterns = [
+    path("", include(router.urls)),
+]

@@ -9,13 +9,14 @@ known_django = ["django", "rest_framework"]
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "known_django", "FIRSTPARTY", "LOCALFOLDER"]
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "core.settings"
+DJANGO_SETTINGS_MODULE = "core.settings_test"
+pythonpath = ["src"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-testpaths = ["../tests"]
-addopts = "-v --tb=short --cov=. --cov-report=term-missing"
+testpaths = ["tests"]
+addopts = "-v --tb=short"
 
 [tool.coverage.run]
-source = ["."]
-omit = ["*/migrations/*", "*/tests/*", "manage.py", "core/asgi.py", "core/wsgi.py"]
+source = ["src"]
+omit = ["*/migrations/*", "*/tests/*", "src/manage.py", "src/core/asgi.py", "src/core/wsgi.py"]
