@@ -36,8 +36,8 @@ API RESTful para gerenciamento de pedidos, clientes e produtos, construída com 
 ### 1. Clonar repositório
 
 ```bash
-git clone https://github.com/seu-usuario/erp-orders.git
-cd erp-orders
+git clone https://github.com/augusto49/Sistema-ERP---M-dulo-de-Gest-o-de-Pedidos.git
+cd Sistema-ERP---M-dulo-de-Gest-o-de-Pedidos
 ```
 
 ### 2. Configurar variáveis de ambiente
@@ -141,6 +141,21 @@ src/
     ├── pagination/        # Paginação padrão
     └── views/             # Health check, Scalar
 ```
+
+## 🏗 Decisões Arquiteturais
+
+| Decisão                                                | Motivação                                                         |
+| ------------------------------------------------------ | ----------------------------------------------------------------- |
+| **Clean Architecture** (Controller→Service→Repository) | Testabilidade e separação de responsabilidades                    |
+| **Repository Pattern com Interfaces ABC**              | Inversão de dependência — services não dependem do Django ORM     |
+| **Pessimistic Locking** (`SELECT FOR UPDATE`)          | Previne race conditions no estoque sem lógica de retry no cliente |
+| **Domain Events via EventBus**                         | Desacopla efeitos colaterais das operações principais             |
+| **Soft Delete** (`deleted_at`)                         | Preserva integridade referencial e permite auditoria              |
+| **Idempotência via Redis**                             | Garante que retries com `Idempotency-Key` não criam duplicatas    |
+| **Snapshots em OrderItem**                             | Grava `product_name`, `sku`, `unit_price` no momento da compra    |
+| **structlog com JSON**                                 | Logs estruturados, parseáveis por ferramentas como ELK/Datadog    |
+
+> Para detalhes sobre trade-offs e fluxo de dados, veja [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## 📌 Endpoints Principais
 
