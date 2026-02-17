@@ -63,7 +63,7 @@ class OrderOutputSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     customer_id = serializers.IntegerField(read_only=True)
     customer_name = serializers.CharField(read_only=True)
-    status = serializers.CharField(read_only=True)
+    status = serializers.SerializerMethodField()
     items = OrderItemOutputSerializer(many=True, read_only=True)
     total = serializers.DecimalField(
         max_digits=12, decimal_places=2, read_only=True
@@ -72,3 +72,9 @@ class OrderOutputSerializer(serializers.Serializer):
     notes = serializers.CharField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
+
+    def get_status(self, obj) -> str:
+        """Retorna o valor string do enum OrderStatus."""
+        if hasattr(obj.status, "value"):
+            return obj.status.value
+        return str(obj.status)
