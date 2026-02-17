@@ -1,6 +1,7 @@
 venv
 .env
 Teste_Tecnico_Desenvolvedor_Pleno_ERP_v1.pdf
+*.ctl
 
 # Python
 __pycache__/
